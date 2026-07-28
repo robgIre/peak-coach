@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0a0e17">
 <meta name="description" content="Peak — a private men's stamina training coach. Pelvic-floor and behavioural technique programs for lasting-longer and confidence.">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Peak">
 <title>Peak — Men's Stamina Coach</title>
 <style>
   :root{
@@ -165,7 +171,7 @@
   /* ---------- Bottom nav ---------- */
   .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;
     background:rgba(13,18,30,.92);backdrop-filter:blur(16px);border-top:1px solid var(--line);
-    display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:40}
+    display:grid;grid-template-columns:repeat(5,1fr);padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:40}
   .nav button{background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:var(--mut2);font-size:.66rem;font-weight:700}
   .nav button .ni{font-size:20px;line-height:1}
   .nav button.active{color:var(--accent2)}
@@ -174,6 +180,40 @@
     border-radius:12px;padding:13px;margin-top:6px}
   .disclaimer b{color:var(--mut)}
   a{color:var(--accent2)}
+
+  /* ---------- Program / roadmap ---------- */
+  .prog-card{background:linear-gradient(160deg,#1c2743,#131a2b)}
+  .wk-bar{height:8px;background:var(--card2);border-radius:5px;overflow:hidden;margin:11px 0 8px}
+  .wk-bar i{display:block;height:100%;background:var(--grad);transition:width .6s}
+  .road-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .road-item:last-child{border-bottom:none}
+  .road-dot{width:30px;height:30px;flex:none;border-radius:50%;background:var(--card2);display:grid;place-items:center;
+    font-weight:800;font-size:.8rem;color:var(--mut2)}
+  .road-item.cur .road-dot{background:var(--grad);color:#04101f}
+  .road-item.done .road-dot{background:rgba(52,211,153,.2);color:var(--good)}
+  .road-item .rt{flex:1;min-width:0}
+  .road-item .rt h4{font-size:.94rem}
+  .road-item .rt p{font-size:.76rem;color:var(--mut);margin-top:1px}
+  .road-item .rs{font-size:.66rem;color:var(--accent2);font-weight:800;letter-spacing:.06em;flex:none}
+
+  /* ---------- Toolkit ---------- */
+  .tool{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);
+    border-radius:15px;padding:16px;margin-bottom:12px;transition:border-color .2s}
+  .tool:active{border-color:var(--accent)}
+  .tool .ic{font-size:26px;width:46px;text-align:center;flex:none}
+  .tool .body{flex:1;min-width:0}
+  .tool .body h4{font-size:1.02rem}
+  .tool .body p{color:var(--mut);font-size:.82rem;margin-top:3px}
+  .spark{width:100%;height:64px;display:block}
+  .tlist>div{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:.9rem;font-weight:600}
+  .tlist>div:last-child{border-bottom:none}
+  .tlist .tt{color:var(--mut2);font-size:.78rem;font-weight:600}
+  .sw-time{font-size:4.4rem;font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums;line-height:1}
+  .sw-sub{color:var(--mut);margin-top:6px;font-weight:600}
+
+  /* ---------- Shared fullscreen overlay ---------- */
+  .fs{position:fixed;inset:0;z-index:60;background:radial-gradient(900px 600px at 50% 25%,#16233f,#080b12);
+    max-width:520px;margin:0 auto;display:flex;flex-direction:column;color:#fff;padding:0 24px}
 </style>
 </head>
 <body>
@@ -201,6 +241,20 @@
   <div class="pl-foot" id="plFoot"></div>
 </div>
 
+<!-- ============ START–STOP TRAINER ============ -->
+<div id="sw" class="fs hide">
+  <div class="pl-top"><button class="x" onclick="Trainer.close()">✕</button><span class="pl-count">Start–Stop Trainer</span><span style="width:38px"></span></div>
+  <div class="pl-main" id="swMain"></div>
+  <div class="pl-foot" id="swFoot"></div>
+</div>
+
+<!-- ============ BREATHING RESET ============ -->
+<div id="breather" class="fs hide">
+  <div class="pl-top"><button class="x" onclick="Breather.close()">✕</button><span class="pl-count">Breathing Reset</span><span style="width:38px"></span></div>
+  <div class="pl-main" id="brMain"></div>
+  <div class="pl-foot" id="brFoot"></div>
+</div>
+
 <!-- ============ MAIN APP ============ -->
 <div id="app" class="hide">
   <div class="topbar">
@@ -214,6 +268,7 @@
 <nav class="nav hide" id="nav">
   <button data-v="today" class="active"><span class="ni">◎</span>Today</button>
   <button data-v="train"><span class="ni">▲</span>Train</button>
+  <button data-v="toolkit"><span class="ni">⏱</span>Tools</button>
   <button data-v="learn"><span class="ni">✦</span>Learn</button>
   <button data-v="progress"><span class="ni">◈</span>Progress</button>
 </nav>
@@ -225,7 +280,8 @@ const todayKey=()=>new Date().toISOString().slice(0,10);
 const defaultState=()=>({
   onboarded:false, goal:null, level:null, freq:null, focus:null,
   streak:0, lastDay:null, sessions:[], // {date, type}
-  history:{} // date -> true
+  history:{}, // date -> true
+  times:[] // {date, secs, stops} — Start–Stop trainer logs
 });
 let S=load();
 function load(){try{return Object.assign(defaultState(),JSON.parse(localStorage.getItem(LS)||'{}'))}catch(e){return defaultState()}}
@@ -253,9 +309,30 @@ const LEVELS={
   advanced:{label:'Advanced',hold:10,reps:{flicks:20,holds:12,elev:8,end:6}}
 };
 
-// Build today's session as a sequence of steps.
+/* ---- Multi-week program: intensity ramps as you complete sessions ---- */
+const PROGRAM=[
+  {name:'Foundation',mult:1.00,focus:2},
+  {name:'Building Control',mult:1.12,focus:0},
+  {name:'Endurance',mult:1.24,focus:3},
+  {name:'Point of No Return',mult:1.36,focus:0},
+  {name:'Arousal Awareness',mult:1.48,focus:3},
+  {name:'Under Pressure',mult:1.60,focus:4},
+  {name:'Integration',mult:1.75,focus:1},
+  {name:'Mastery',mult:1.90,focus:5}
+];
+const WEEKS=PROGRAM.length;
+function perWeek(){return S.freq||3}
+function currentWeekIdx(){return Math.min(WEEKS-1,Math.floor((S.sessions.length)/perWeek()))}
+function weekInto(){return S.sessions.length-currentWeekIdx()*perWeek()}
+function programDone(){return S.sessions.length>=WEEKS*perWeek()}
+
+// Build today's session as a sequence of steps, scaled by program week.
 function buildSession(){
-  const lvl=LEVELS[S.level||'beginner'];
+  const base=LEVELS[S.level||'beginner'];
+  const m=PROGRAM[currentWeekIdx()].mult, hm=1+(m-1)*0.5; // holds ramp more gently than reps
+  const sc=n=>Math.max(1,Math.round(n*m));
+  const lvl={label:base.label,hold:Math.round(base.hold*hm),
+    reps:{flicks:sc(base.reps.flicks),holds:sc(base.reps.holds),elev:sc(base.reps.elev),end:sc(base.reps.end)}};
   const order=['quick_flicks','long_holds','elevator','endurance'];
   const steps=[];
   order.forEach(k=>{
@@ -342,6 +419,8 @@ function ringSvg(pct){
 function viewToday(){
   const done=!!S.history[todayKey()];
   const mins=sessionMinutes();
+  const wk=currentWeekIdx(), into=weekInto(), pct=Math.min(100,Math.round(into/perWeek()*100));
+  const foc=LESSONS[PROGRAM[wk].focus];
   const goalTxt={last_longer:'Last longer',confidence:'Build confidence',control:'Ejaculatory control',performance:'Peak performance'}[S.goal]||'Stamina';
   V.innerHTML=`
     <div class="card hero pad-lg">
@@ -361,6 +440,21 @@ function viewToday(){
         <span class="chip">🎯 <b>${goalTxt}</b></span>
         <span class="chip">📈 <b>${LEVELS[S.level||'beginner'].label}</b></span>
         <span class="chip">🗓️ <b>${S.freq||3}×/week</b></span>
+      </div>
+    </div>
+
+    <div class="section-title">Your program</div>
+    <div class="card prog-card">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <h3 style="font-size:1.05rem">Week ${wk+1} · ${PROGRAM[wk].name}</h3>
+        <span style="color:var(--mut2);font-size:.78rem;font-weight:800">${wk+1}/${WEEKS}</span>
+      </div>
+      <div class="wk-bar"><i style="width:${pct}%"></i></div>
+      <p style="color:var(--mut);font-size:.82rem">${programDone()?"Program complete — you're in mastery mode. Keep training to hold your gains.":`${Math.max(0,perWeek()-into)} more session${(perWeek()-into)===1?'':'s'} to unlock Week ${wk+2}.`}</p>
+      <div class="ex" style="margin:13px 0 0;background:var(--card2)" onclick="go('learn')">
+        <div class="ic">${foc.ic}</div>
+        <div class="body"><h4 style="font-size:.92rem">This week's focus</h4><p>${foc.title}</p></div>
+        <div class="go">›</div>
       </div>
     </div>
 
@@ -446,6 +540,18 @@ function viewProgress(){
       <div class="dow">${dow.map(d=>`<span>${d}</span>`).join('')}</div>
       <div class="cal">${cells}</div>
     </div>
+    <div class="section-title">8-week program</div>
+    <div class="card">
+      ${PROGRAM.map((p,i)=>{
+        const cur=i===currentWeekIdx()&&!programDone();
+        const done=i<currentWeekIdx()||programDone();
+        return `<div class="road-item ${cur?'cur':''} ${done?'done':''}">
+          <div class="road-dot">${done?'✓':i+1}</div>
+          <div class="rt"><h4>Week ${i+1} · ${p.name}</h4><p>Focus: ${LESSONS[p.focus].title}</p></div>
+          ${cur?'<span class="rs">CURRENT</span>':done?'<span class="rs" style="color:var(--good)">DONE</span>':''}
+        </div>`;
+      }).join('')}
+    </div>
     <div class="section-title">Milestones</div>
     <div class="card" style="padding:6px 16px">
       ${milestone('First session',S.sessions.length>=1)}
@@ -480,7 +586,7 @@ function setLevel(k){S.level=k;save();viewTrain()}
 function go(v){
   currentView=v;
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
-  ({today:viewToday,train:viewTrain,learn:viewLearn,progress:viewProgress}[v])();
+  ({today:viewToday,train:viewTrain,toolkit:viewToolkit,learn:viewLearn,progress:viewProgress}[v])();
   window.scrollTo(0,0);
 }
 document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.v));
@@ -580,6 +686,126 @@ function markDone(){
   }
 }
 
+/* ================= TOOLKIT (in-the-moment tools) ================= */
+function fmt(s){return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+function sparkline(vals){
+  const w=280,h=64,max=Math.max(...vals),min=Math.min(...vals),rng=(max-min)||1;
+  const step=vals.length>1?w/(vals.length-1):0;
+  const pts=vals.map((v,i)=>`${(i*step).toFixed(1)},${(h-5-((v-min)/rng)*(h-14)).toFixed(1)}`);
+  const line=pts.join(' ');
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="rgba(34,211,238,.35)"/><stop offset="1" stop-color="rgba(34,211,238,0)"/></linearGradient></defs>
+    <polygon points="0,${h} ${line} ${w},${h}" fill="url(#sg)"/>
+    <polyline points="${line}" fill="none" stroke="#22d3ee" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+}
+function viewToolkit(){
+  const times=S.times||[];
+  const best=times.length?Math.max(...times.map(t=>t.secs)):0;
+  const last=times.length?times[times.length-1].secs:0;
+  V.innerHTML=`
+    <div class="section-title">In-the-moment tools</div>
+    <div class="tool" onclick="Trainer.open()">
+      <div class="ic">⏱️</div>
+      <div class="body"><h4>Start–Stop Trainer</h4><p>Practise the core technique and log how long you last. Watch it climb.</p></div>
+      <div class="go" style="color:var(--mut2);font-size:1.3rem">›</div>
+    </div>
+    <div class="tool" onclick="Breather.open()">
+      <div class="ic">🌬️</div>
+      <div class="body"><h4>Breathing Reset</h4><p>A minute of paced breathing to lower arousal in the moment.</p></div>
+      <div class="go" style="color:var(--mut2);font-size:1.3rem">›</div>
+    </div>
+
+    <div class="section-title">Your staying power</div>
+    <div class="card">
+      <div class="stat-row" ${times.length?'style="margin-bottom:14px"':''}>
+        <div class="stat"><div class="n">${times.length?fmt(best):'—'}</div><div class="l">Best</div></div>
+        <div class="stat"><div class="n">${times.length?fmt(last):'—'}</div><div class="l">Last</div></div>
+        <div class="stat"><div class="n">${times.length}</div><div class="l">Logged</div></div>
+      </div>
+      ${times.length?sparkline(times.map(t=>t.secs)):'<p style="color:var(--mut);font-size:.85rem">Log your first Start–Stop session to start tracking your progress over time.</p>'}
+    </div>
+    ${times.length?`<div class="section-title">Recent sessions</div><div class="card tlist">
+      ${times.slice(-8).reverse().map(t=>`<div><span>${fmt(t.secs)} <span class="tt">· ${t.stops} stop${t.stops===1?'':'s'}</span></span><span class="tt">${t.date}</span></div>`).join('')}
+    </div>`:''}
+    <div class="disclaimer">These tools are for training and self-awareness. Times vary naturally day to day — look for the trend, not any single session.</div>`;
+}
+
+const Trainer={secs:0,stops:0,running:false,timer:null,
+  open(){this.secs=0;this.stops=0;this.running=false;clearInterval(this.timer);
+    document.getElementById('sw').classList.remove('hide');document.getElementById('nav').classList.add('hide');this._render();},
+  begin(){this.running=true;
+    this.timer=setInterval(()=>{this.secs++;const e=document.getElementById('swTime');if(e)e.textContent=fmt(this.secs);},1000);
+    this._render();},
+  pause(){this.running=false;clearInterval(this.timer);this.stops++;buzz();this._render();},
+  finish(){this.running=false;clearInterval(this.timer);
+    if(this.secs>0){(S.times=S.times||[]).push({date:todayKey(),secs:this.secs,stops:this.stops});save();}
+    this._result();},
+  _render(){
+    const m=document.getElementById('swMain'),f=document.getElementById('swFoot');
+    const instr=this.running?'When you feel close to the point of no return, hit pause and breathe until the urge drops.'
+      :this.secs>0?'Wait until arousal falls to a 4–5, then resume. Finish when you are done.'
+      :'Begin stimulation, then start the timer. Aim to beat your last time.';
+    m.innerHTML=`
+      <div class="pl-phase">${this.running?'Riding the edge':this.secs>0?'Paused — let it settle':'Ready'}</div>
+      <div class="sw-time" id="swTime">${fmt(this.secs)}</div>
+      <div class="sw-sub">${this.stops} stop${this.stops===1?'':'s'} so far</div>
+      <p class="pl-instr" style="margin-top:20px">${instr}</p>`;
+    if(!this.running&&this.secs===0){f.innerHTML=`<button class="primary" onclick="Trainer.begin()">Start</button>`;}
+    else if(this.running){f.innerHTML=`<button class="primary" onclick="Trainer.pause()">⏸ I'm close — pause</button>`;}
+    else{f.innerHTML=`<button onclick="Trainer.finish()">Finish</button><button class="primary" onclick="Trainer.begin()">Resume</button>`;}
+  },
+  _result(){
+    const times=S.times||[];const best=times.length?Math.max(...times.map(t=>t.secs)):0;
+    const isBest=this.secs>0&&this.secs>=best;
+    document.getElementById('swMain').innerHTML=`
+      <div class="done-screen">
+        <div class="tick">${this.secs===0?'✕':isBest?'🏆':'✓'}</div>
+        <h2 style="font-size:1.7rem">${fmt(this.secs)}</h2>
+        <p style="color:var(--mut);margin-top:8px;max-width:280px">${this.secs===0?'No time logged.':isBest?'New personal best — your control is improving.':'Logged. Keep practising — the trend is what counts.'}</p>
+      </div>`;
+    document.getElementById('swFoot').innerHTML=`<button class="primary" onclick="Trainer.close()">Done</button>`;
+  },
+  close(){this.running=false;clearInterval(this.timer);
+    document.getElementById('sw').classList.add('hide');document.getElementById('nav').classList.remove('hide');go('toolkit');}
+};
+
+const Breather={seq:[],i:0,timer:null,
+  open(){
+    this.seq=[];const box=[['Breathe in',4,1.45],['Hold',4,1.45],['Breathe out',6,0.62],['Hold',2,0.62]];
+    for(let r=0;r<4;r++)box.forEach(p=>this.seq.push({phase:p[0],dur:p[1],scale:p[2]}));
+    this.i=0;
+    document.getElementById('breather').classList.remove('hide');document.getElementById('nav').classList.add('hide');
+    this._render();
+  },
+  _render(){
+    clearInterval(this.timer);
+    if(this.i>=this.seq.length)return this._done();
+    const s=this.seq[this.i];
+    document.getElementById('brMain').innerHTML=`
+      <div class="pl-phase">Round ${Math.floor(this.i/4)+1} of 4</div>
+      <div class="pl-name">🌬️ ${s.phase}</div>
+      <div class="orb-wrap"><div class="orb-ring"></div><div class="orb" id="brOrb"></div></div>
+      <div class="pl-timer" id="brTimer">${s.dur}</div>
+      <div class="pl-instr">Breathe into your belly. Slow and steady lowers arousal.</div>`;
+    document.getElementById('brFoot').innerHTML=`<button class="primary" onclick="Breather.close()">End</button>`;
+    const orb=document.getElementById('brOrb');
+    requestAnimationFrame(()=>{orb.style.transition='transform '+s.dur+'s ease';orb.style.transform='scale('+s.scale+')';});
+    let t=s.dur;const tEl=document.getElementById('brTimer');
+    this.timer=setInterval(()=>{t--;if(t<=0){clearInterval(this.timer);this.i++;this._render();return}tEl.textContent=t;},1000);
+  },
+  _done(){
+    clearInterval(this.timer);buzz();
+    document.getElementById('brMain').innerHTML=`<div class="done-screen"><div class="tick">✓</div>
+      <h2 style="font-size:1.55rem">Reset complete</h2>
+      <p style="color:var(--mut);margin-top:8px;max-width:260px">Calmer, and back in control.</p></div>`;
+    document.getElementById('brFoot').innerHTML=`<button class="primary" onclick="Breather.close()">Done</button>`;
+  },
+  close(){clearInterval(this.timer);
+    document.getElementById('breather').classList.add('hide');document.getElementById('nav').classList.remove('hide');go('toolkit');}
+};
+
 /* ================= ONBOARDING ================= */
 const OB=[
  {q:"Let's build your plan",lead:"A few quick questions to personalise your training. Private and stored only on this device.",key:null,type:'intro'},
@@ -650,6 +876,10 @@ function resetAll(){
     document.getElementById('nav').classList.add('hide');
     startOnboard();
   }
+}
+// service worker (offline / installable PWA)
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
 // init
 if(S.onboarded)boot(); else startOnboard();
