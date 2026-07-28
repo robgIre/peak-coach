@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0e17">
+<meta name="description" content="Peak — a private men's stamina training coach. Pelvic-floor and behavioural technique programs for lasting-longer and confidence.">
+<title>Peak — Men's Stamina Coach</title>
+<style>
+  :root{
+    --bg:#0a0e17; --bg2:#111726; --card:#151d2e; --card2:#1b2438;
+    --line:#243049; --txt:#eef2fb; --mut:#8a96b2; --mut2:#5f6b86;
+    --accent:#3b82f6; --accent2:#22d3ee; --good:#34d399; --warn:#fbbf24; --bad:#f87171;
+    --grad:linear-gradient(135deg,#3b82f6,#22d3ee);
+    --grad2:linear-gradient(135deg,#6366f1,#3b82f6);
+    --r:18px; --sh:0 10px 40px rgba(0,0,0,.45);
+    font-size:16px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;overscroll-behavior:none}
+  body{max-width:520px;margin:0 auto;min-height:100vh;position:relative;
+    background:radial-gradient(1200px 600px at 50% -10%,#16203a 0%,var(--bg) 55%)}
+  h1,h2,h3,h4{margin:0;font-weight:750;letter-spacing:-.02em}
+  p{margin:0;line-height:1.55}
+  button{font-family:inherit;cursor:pointer;border:none;color:inherit}
+  .hide{display:none!important}
+  .grad-txt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* ---------- App shell ---------- */
+  #app{padding:0 18px 110px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:22px 2px 14px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.25rem;letter-spacing:-.03em}
+  .logo .mark{width:30px;height:30px;border-radius:9px;background:var(--grad);display:grid;place-items:center;
+    box-shadow:0 4px 16px rgba(59,130,246,.5);font-size:16px}
+  .ghost-btn{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 11px;color:var(--mut);font-size:.8rem;font-weight:600}
+
+  .view{animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---------- Cards ---------- */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+  .card.pad-lg{padding:22px}
+  .section-title{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--mut2);
+    font-weight:700;margin:20px 2px 10px}
+
+  /* ---------- Hero / today ring ---------- */
+  .hero{background:linear-gradient(160deg,#1c2743,#131a2b);position:relative;overflow:hidden;text-align:center;padding:26px 18px 24px}
+  .hero:before{content:"";position:absolute;inset:-40% -20% auto;height:200px;
+    background:radial-gradient(closest-side,rgba(59,130,246,.35),transparent);filter:blur(10px)}
+  .ring-wrap{position:relative;width:180px;height:180px;margin:6px auto 14px}
+  .ring-wrap svg{transform:rotate(-90deg)}
+  .ring-bg{fill:none;stroke:var(--card2);stroke-width:14}
+  .ring-fg{fill:none;stroke:url(#rg);stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)}
+  .ring-center{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+  .ring-center .big{font-size:2.6rem;font-weight:800;line-height:1;letter-spacing:-.04em}
+  .ring-center .sub{color:var(--mut);font-size:.82rem;margin-top:4px}
+  .streak{display:inline-flex;align-items:center;gap:6px;background:rgba(251,191,36,.12);
+    color:var(--warn);border:1px solid rgba(251,191,36,.25);padding:6px 12px;border-radius:20px;font-weight:700;font-size:.85rem}
+
+  .btn{display:block;width:100%;background:var(--grad);color:#04101f;font-weight:800;
+    font-size:1.02rem;padding:16px;border-radius:15px;letter-spacing:-.01em;
+    box-shadow:0 8px 24px rgba(34,150,220,.35);transition:transform .12s}
+  .btn:active{transform:scale(.98)}
+  .btn.sec{background:var(--card2);color:var(--txt);border:1px solid var(--line);box-shadow:none}
+  .btn.sm{padding:12px;font-size:.92rem}
+
+  /* ---------- Plan chips / meta ---------- */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .chip{background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:7px 13px;font-size:.82rem;color:var(--mut);font-weight:600}
+  .chip b{color:var(--txt)}
+
+  .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center}
+  .stat .n{font-size:1.5rem;font-weight:800;letter-spacing:-.03em}
+  .stat .l{font-size:.72rem;color:var(--mut2);margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
+
+  /* ---------- Exercise list ---------- */
+  .ex{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);
+    border-radius:15px;padding:14px;margin-bottom:11px;transition:border-color .2s}
+  .ex:active{border-color:var(--accent)}
+  .ex .ic{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-size:22px;flex:none;
+    background:var(--card2)}
+  .ex .body{flex:1;min-width:0}
+  .ex .body h4{font-size:1rem}
+  .ex .body p{color:var(--mut);font-size:.82rem;margin-top:2px}
+  .ex .go{color:var(--mut2);font-size:1.3rem}
+  .ex .tag{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:8px;background:var(--card2);color:var(--mut)}
+  .badge-done{color:var(--good)!important}
+
+  /* ---------- Learn ---------- */
+  .lesson{background:var(--card);border:1px solid var(--line);border-radius:15px;margin-bottom:12px;overflow:hidden}
+  .lesson-head{display:flex;align-items:center;gap:13px;padding:15px}
+  .lesson-head .ic{font-size:22px}
+  .lesson-head h4{flex:1;font-size:1rem}
+  .lesson-head .cx{color:var(--mut2);transition:transform .25s;font-size:1.1rem}
+  .lesson.open .cx{transform:rotate(45deg)}
+  .lesson-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+  .lesson.open .lesson-body{max-height:1400px}
+  .lesson-body .inner{padding:0 16px 16px;color:var(--mut);font-size:.9rem;line-height:1.6}
+  .lesson-body .inner strong{color:var(--txt)}
+  .lesson-body ol,.lesson-body ul{margin:8px 0;padding-left:20px}
+  .lesson-body li{margin:6px 0}
+  .steps-num{counter-reset:s}
+  .step{display:flex;gap:12px;margin:10px 0}
+  .step .sn{width:24px;height:24px;flex:none;border-radius:50%;background:var(--grad);color:#04101f;
+    font-weight:800;font-size:.8rem;display:grid;place-items:center}
+
+  /* ---------- Progress calendar ---------- */
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:6px}
+  .cal .d{aspect-ratio:1;border-radius:8px;background:var(--card2);display:grid;place-items:center;
+    font-size:.72rem;color:var(--mut2)}
+  .cal .d.done{background:var(--grad);color:#04101f;font-weight:800}
+  .cal .d.today{outline:2px solid var(--accent)}
+  .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:4px}
+  .dow span{text-align:center;font-size:.66rem;color:var(--mut2);font-weight:700}
+
+  /* ---------- Onboarding ---------- */
+  #onboard{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;flex-direction:column;
+    max-width:520px;margin:0 auto;padding:0 24px}
+  .ob-top{padding:26px 0 10px}
+  .ob-prog{height:5px;background:var(--card2);border-radius:4px;overflow:hidden}
+  .ob-prog i{display:block;height:100%;background:var(--grad);width:0;transition:width .4s}
+  .ob-step{flex:1;display:flex;flex-direction:column;justify-content:center;animation:fade .3s}
+  .ob-step h2{font-size:1.7rem;line-height:1.15;margin-bottom:8px}
+  .ob-step .lead{color:var(--mut);margin-bottom:22px}
+  .opt{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);
+    border-radius:15px;padding:16px;margin-bottom:11px;transition:all .15s}
+  .opt:active{transform:scale(.99)}
+  .opt.sel{border-color:var(--accent);background:var(--card2)}
+  .opt .oic{font-size:24px}
+  .opt .otx h4{font-size:1rem}
+  .opt .otx p{font-size:.8rem;color:var(--mut);margin-top:2px}
+  .ob-foot{padding:16px 0 30px}
+
+  /* ---------- Session player ---------- */
+  #player{position:fixed;inset:0;z-index:60;background:radial-gradient(900px 600px at 50% 25%,#16233f,#080b12);
+    max-width:520px;margin:0 auto;display:flex;flex-direction:column;color:#fff;padding:0 24px}
+  .pl-top{display:flex;align-items:center;justify-content:space-between;padding:22px 0 6px}
+  .pl-top .x{background:rgba(255,255,255,.08);width:38px;height:38px;border-radius:50%;font-size:1.1rem}
+  .pl-count{color:var(--mut);font-size:.85rem;font-weight:600}
+  .pl-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .pl-phase{font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent2);font-weight:700;margin-bottom:6px;height:1em}
+  .pl-name{font-size:1.5rem;font-weight:800;margin-bottom:26px;letter-spacing:-.02em}
+  .orb-wrap{position:relative;width:260px;height:260px;display:grid;place-items:center;margin-bottom:26px}
+  .orb{width:150px;height:150px;border-radius:50%;background:var(--grad);
+    box-shadow:0 0 70px rgba(59,130,246,.55);transition:transform 1s ease,box-shadow 1s ease;
+    display:grid;place-items:center}
+  .orb .cue{font-size:1.25rem;font-weight:800;color:#04101f}
+  .orb-ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(59,130,246,.25)}
+  .pl-timer{font-size:3.4rem;font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+  .pl-instr{color:var(--mut);font-size:.95rem;margin-top:6px;max-width:300px;min-height:2.6em}
+  .pl-foot{padding:0 0 34px;display:flex;gap:12px}
+  .pl-foot button{flex:1;background:rgba(255,255,255,.1);border-radius:14px;padding:15px;font-weight:700;color:#fff}
+  .pl-foot .primary{background:var(--grad);color:#04101f}
+  .pl-progressbar{height:5px;background:rgba(255,255,255,.1);border-radius:4px;margin:0 0 16px;overflow:hidden}
+  .pl-progressbar i{display:block;height:100%;background:var(--grad);width:0;transition:width .3s}
+
+  /* complete screen */
+  .done-screen{text-align:center;animation:fade .4s}
+  .done-screen .tick{width:90px;height:90px;border-radius:50%;background:var(--grad);display:grid;place-items:center;
+    margin:0 auto 20px;font-size:44px;box-shadow:0 0 60px rgba(52,211,153,.4)}
+
+  /* ---------- Bottom nav ---------- */
+  .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;
+    background:rgba(13,18,30,.92);backdrop-filter:blur(16px);border-top:1px solid var(--line);
+    display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:40}
+  .nav button{background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:var(--mut2);font-size:.66rem;font-weight:700}
+  .nav button .ni{font-size:20px;line-height:1}
+  .nav button.active{color:var(--accent2)}
+
+  .disclaimer{font-size:.72rem;color:var(--mut2);line-height:1.5;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:13px;margin-top:6px}
+  .disclaimer b{color:var(--mut)}
+  a{color:var(--accent2)}
+</style>
+</head>
+<body>
+
+<!-- ============ ONBOARDING ============ -->
+<div id="onboard" class="hide">
+  <div class="ob-top">
+    <div class="ob-prog"><i id="obBar"></i></div>
+  </div>
+  <div id="obStep" class="ob-step"></div>
+  <div class="ob-foot">
+    <button class="btn" id="obNext">Continue</button>
+  </div>
+</div>
+
+<!-- ============ SESSION PLAYER ============ -->
+<div id="player" class="hide">
+  <div class="pl-top">
+    <button class="x" onclick="Player.quit()">✕</button>
+    <span class="pl-count" id="plCount"></span>
+    <span style="width:38px"></span>
+  </div>
+  <div class="pl-progressbar"><i id="plBar"></i></div>
+  <div class="pl-main" id="plMain"></div>
+  <div class="pl-foot" id="plFoot"></div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="app" class="hide">
+  <div class="topbar">
+    <div class="logo"><span class="mark">▲</span> Peak</div>
+    <button class="ghost-btn" onclick="resetAll()">Reset</button>
+  </div>
+  <div id="view"></div>
+</div>
+
+<!-- ============ NAV ============ -->
+<nav class="nav hide" id="nav">
+  <button data-v="today" class="active"><span class="ni">◎</span>Today</button>
+  <button data-v="train"><span class="ni">▲</span>Train</button>
+  <button data-v="learn"><span class="ni">✦</span>Learn</button>
+  <button data-v="progress"><span class="ni">◈</span>Progress</button>
+</nav>
+
+<script>
+/* ================= STATE ================= */
+const LS='tc_state_v1';
+const todayKey=()=>new Date().toISOString().slice(0,10);
+const defaultState=()=>({
+  onboarded:false, goal:null, level:null, freq:null, focus:null,
+  streak:0, lastDay:null, sessions:[], // {date, type}
+  history:{} // date -> true
+});
+let S=load();
+function load(){try{return Object.assign(defaultState(),JSON.parse(localStorage.getItem(LS)||'{}'))}catch(e){return defaultState()}}
+function save(){localStorage.setItem(LS,JSON.stringify(S))}
+
+/* ================= PROGRAM DATA ================= */
+// Pelvic-floor drills. dur in seconds per rep phase.
+const DRILLS={
+  quick_flicks:{name:'Quick Flicks',ic:'⚡',desc:'Fast squeeze-and-release to build fast-twitch control',
+    build:(lvl)=>({reps:lvl.reps.flicks,hold:1,rest:1,contractCue:'Squeeze',restCue:'Release'})},
+  long_holds:{name:'Long Holds',ic:'⏳',desc:'Sustained contractions for endurance and control',
+    build:(lvl)=>({reps:lvl.reps.holds,hold:lvl.hold,rest:lvl.hold,contractCue:'Hold',restCue:'Relax'})},
+  elevator:{name:'The Elevator',ic:'🛗',desc:'Contract in graded stages, then ease down floor by floor',
+    build:(lvl)=>({reps:lvl.reps.elev,hold:5,rest:5,contractCue:'Rise',restCue:'Lower'})},
+  endurance:{name:'Endurance Hold',ic:'🔥',desc:'Longer max holds to push your control ceiling',
+    build:(lvl)=>({reps:lvl.reps.end,hold:lvl.hold+3,rest:lvl.hold,contractCue:'Hold strong',restCue:'Recover'})}
+};
+// Breathing / arousal control drill (used as warm-down)
+const BREATH={name:'Box Breathing',ic:'🌬️',desc:'Slow paced breathing to lower arousal and stay in control',
+  phases:[['Breathe in',4],['Hold',4],['Breathe out',4],['Hold',4]],rounds:5};
+
+const LEVELS={
+  beginner:{label:'Beginner',hold:3,reps:{flicks:10,holds:8,elev:4,end:3}},
+  intermediate:{label:'Intermediate',hold:6,reps:{flicks:15,holds:10,elev:6,end:4}},
+  advanced:{label:'Advanced',hold:10,reps:{flicks:20,holds:12,elev:8,end:6}}
+};
+
+// Build today's session as a sequence of steps.
+function buildSession(){
+  const lvl=LEVELS[S.level||'beginner'];
+  const order=['quick_flicks','long_holds','elevator','endurance'];
+  const steps=[];
+  order.forEach(k=>{
+    const d=DRILLS[k], cfg=d.build(lvl);
+    steps.push({kind:'drill',key:k,name:d.name,ic:d.ic,...cfg});
+  });
+  steps.push({kind:'breath',name:BREATH.name,ic:BREATH.ic,phases:BREATH.phases,rounds:BREATH.rounds});
+  return steps;
+}
+function sessionMinutes(){
+  let s=0;const steps=buildSession();
+  steps.forEach(st=>{
+    if(st.kind==='drill')s+=st.reps*(st.hold+st.rest)+4;
+    else s+=st.rounds*BREATH.phases.reduce((a,p)=>a+p[1],0)+4;
+  });
+  return Math.max(3,Math.round(s/60));
+}
+
+/* ================= LEARN CONTENT ================= */
+const LESSONS=[
+ {ic:'⏸️',title:'The Start–Stop Method',body:`
+   <p>One of the most proven techniques for building lasting power. It trains you to recognise the "point of no return" and pull back from it.</p>
+   <div class="steps-num">
+     <div class="step"><span class="sn">1</span><div>Begin stimulation (alone or with a partner) and focus on the rising sensation.</div></div>
+     <div class="step"><span class="sn">2</span><div>When you feel you're getting close to climax — roughly a <strong>7–8 out of 10</strong> — completely stop.</div></div>
+     <div class="step"><span class="sn">3</span><div>Wait 20–30 seconds until the urge drops back to a <strong>4–5</strong>. Breathe slowly.</div></div>
+     <div class="step"><span class="sn">4</span><div>Resume, and repeat the cycle 3–4 times before allowing yourself to finish.</div></div>
+   </div>
+   <p><strong>Why it works:</strong> repeated practice teaches your body to tolerate high arousal without tipping over, extending your control over time.</p>`},
+ {ic:'🤏',title:'The Squeeze Technique',body:`
+   <p>A variation of start–stop developed by Masters &amp; Johnson, using firm pressure to rapidly lower arousal.</p>
+   <div class="steps-num">
+     <div class="step"><span class="sn">1</span><div>Stimulate until you're close to climax.</div></div>
+     <div class="step"><span class="sn">2</span><div>Firmly squeeze the head of the penis (where the shaft meets the glans) for about <strong>10 seconds</strong>.</div></div>
+     <div class="step"><span class="sn">3</span><div>The urge to climax will fade. Pause 30 seconds, then continue.</div></div>
+     <div class="step"><span class="sn">4</span><div>Repeat as needed. Over weeks, you'll need it less.</div></div>
+   </div>`},
+ {ic:'💪',title:'Why Pelvic-Floor Training Works',body:`
+   <p>Your pelvic-floor muscles (the ones you'd use to stop urinating mid-flow) play a direct role in ejaculatory control. Strengthening them is one of the few approaches with solid clinical evidence for premature ejaculation.</p>
+   <ul>
+     <li><strong>Find them:</strong> imagine stopping the flow of urine and lifting your testicles — that lift is the contraction. Your abs, glutes and thighs should stay relaxed.</li>
+     <li><strong>Consistency beats intensity:</strong> short daily sessions outperform occasional hard efforts.</li>
+     <li><strong>Give it time:</strong> most men notice changes after <strong>4–6 weeks</strong> of daily practice.</li>
+   </ul>
+   <p>The <strong>Train</strong> tab guides you through this automatically — just follow the orb.</p>`},
+ {ic:'🌊',title:'Edging & Arousal Awareness',body:`
+   <p>Edging is deliberately riding the edge of climax to expand your comfort zone at high arousal.</p>
+   <ul>
+     <li>Rate your arousal 1–10 in real time. Learn what a 6, 7 and 8 actually feel like.</li>
+     <li>Spend time hovering at 7 without going higher.</li>
+     <li>Combine with slow breathing (see the breathing drill) to actively bring the number down.</li>
+   </ul>
+   <p>Mastering this makes the point of no return predictable instead of surprising.</p>`},
+ {ic:'🧘',title:'Breathing & Performance Anxiety',body:`
+   <p>Anxiety accelerates arousal and the ejaculatory reflex. Slowing your breathing calms your nervous system and buys control.</p>
+   <ul>
+     <li><strong>Box breathing:</strong> in 4s → hold 4s → out 4s → hold 4s. The Train session finishes with this.</li>
+     <li>Breathe into your belly, not your chest.</li>
+     <li>Use it during sex: a few slow exhales at a high-arousal moment can reset you.</li>
+   </ul>`},
+ {ic:'📅',title:'Building the Habit',body:`
+   <p>Results come from consistency, not marathon sessions.</p>
+   <ul>
+     <li>Anchor training to an existing habit — after brushing your teeth, for example.</li>
+     <li>Aim for your target days per week; protect your streak.</li>
+     <li>Pelvic-floor drills are invisible — you can do them anywhere once you know the movement.</li>
+   </ul>`}
+];
+
+/* ================= RENDER: VIEWS ================= */
+const V=document.getElementById('view');
+let currentView='today';
+
+function ringSvg(pct){
+  const R=76,C=2*Math.PI*R,off=C*(1-pct/100);
+  return `<svg width="180" height="180" viewBox="0 0 180 180">
+    <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+    <circle class="ring-bg" cx="90" cy="90" r="${R}"></circle>
+    <circle class="ring-fg" cx="90" cy="90" r="${R}" stroke-dasharray="${C}" stroke-dashoffset="${off}"></circle>
+  </svg>`;
+}
+
+function viewToday(){
+  const done=!!S.history[todayKey()];
+  const mins=sessionMinutes();
+  const goalTxt={last_longer:'Last longer',confidence:'Build confidence',control:'Ejaculatory control',performance:'Peak performance'}[S.goal]||'Stamina';
+  V.innerHTML=`
+    <div class="card hero pad-lg">
+      <div class="streak">🔥 ${S.streak} day streak</div>
+      <div class="ring-wrap">${ringSvg(done?100:0)}
+        <div class="ring-center">
+          <div class="big">${done?'✓':mins}</div>
+          <div class="sub">${done?'Session complete':'min session'}</div>
+        </div>
+      </div>
+      <h2 style="font-size:1.35rem">${done?"You've trained today":"Today's training"}</h2>
+      <p style="color:var(--mut);margin-top:6px;font-size:.9rem">${done?'Come back tomorrow to keep your streak alive.':'Follow the guided orb. Squeeze on the cue, relax on release.'}</p>
+      <div style="margin-top:18px">
+        <button class="btn" onclick="Player.start()">${done?'Train again':'Start session'}</button>
+      </div>
+      <div class="chips">
+        <span class="chip">🎯 <b>${goalTxt}</b></span>
+        <span class="chip">📈 <b>${LEVELS[S.level||'beginner'].label}</b></span>
+        <span class="chip">🗓️ <b>${S.freq||3}×/week</b></span>
+      </div>
+    </div>
+
+    <div class="section-title">This week</div>
+    <div class="stat-row">
+      <div class="stat"><div class="n">${weekCount()}</div><div class="l">Sessions</div></div>
+      <div class="stat"><div class="n">${S.streak}</div><div class="l">Streak</div></div>
+      <div class="stat"><div class="n">${S.sessions.length}</div><div class="l">All-time</div></div>
+    </div>
+
+    <div class="section-title">Quick technique</div>
+    <div class="ex" onclick="go('learn')">
+      <div class="ic">⏸️</div>
+      <div class="body"><h4>Start–Stop Method</h4><p>The core skill for lasting longer. Read the 4 steps →</p></div>
+      <div class="go">›</div>
+    </div>
+
+    <div class="disclaimer"><b>Health note.</b> Peak is an educational fitness tool, not medical advice or treatment. Persistent concerns about premature ejaculation, erectile function or sexual health should be discussed with a doctor.</div>
+  `;
+}
+
+function viewTrain(){
+  const lvl=LEVELS[S.level||'beginner'];
+  let html=`<div class="section-title">Today's pelvic-floor session</div>`;
+  buildSession().forEach(st=>{
+    if(st.kind==='drill'){
+      const meta=`${st.reps} reps · ${st.hold}s ${st.contractCue.toLowerCase()} / ${st.rest}s ${st.restCue.toLowerCase()}`;
+      html+=`<div class="ex">
+        <div class="ic">${st.ic}</div>
+        <div class="body"><h4>${st.name}</h4><p>${meta}</p></div>
+        <span class="tag">${st.reps}×</span></div>`;
+    } else {
+      html+=`<div class="ex">
+        <div class="ic">${st.ic}</div>
+        <div class="body"><h4>${st.name}</h4><p>${st.rounds} rounds · warm-down</p></div>
+        <span class="tag">${st.rounds}×</span></div>`;
+    }
+  });
+  html+=`<button class="btn" style="margin-top:6px" onclick="Player.start()">▶ Start guided session</button>`;
+  html+=`<div class="section-title">Adjust difficulty</div><div class="card">
+    <p style="color:var(--mut);font-size:.85rem;margin-bottom:12px">Current level: <b style="color:var(--txt)">${lvl.label}</b> — ${lvl.hold}s holds. Move up when the session feels easy.</p>
+    <div style="display:flex;gap:8px">
+     ${Object.keys(LEVELS).map(k=>`<button class="btn sec sm" style="${S.level===k?'border-color:var(--accent);color:var(--accent2)':''}" onclick="setLevel('${k}')">${LEVELS[k].label}</button>`).join('')}
+    </div></div>`;
+  V.innerHTML=html;
+}
+
+function viewLearn(){
+  V.innerHTML=`<div class="section-title">Techniques & knowledge</div>`+
+    LESSONS.map((l,i)=>`
+    <div class="lesson" id="les${i}">
+      <div class="lesson-head" onclick="toggleLesson(${i})">
+        <span class="ic">${l.ic}</span><h4>${l.title}</h4><span class="cx">+</span>
+      </div>
+      <div class="lesson-body"><div class="inner">${l.body}</div></div>
+    </div>`).join('')+
+    `<div class="disclaimer" style="margin-top:14px"><b>Health note.</b> Techniques here are widely used and evidence-informed but individual results vary. If premature ejaculation is persistent or distressing, a GP or sexual-health specialist can help — it's common and treatable.</div>`;
+}
+
+function viewProgress(){
+  // last 28 days grid
+  const days=[];const now=new Date();
+  for(let i=27;i>=0;i--){const d=new Date(now);d.setDate(now.getDate()-i);days.push(d)}
+  const dow=['S','M','T','W','T','F','S'];
+  // pad to start on Sunday
+  const pad=days[0].getDay();
+  let cells='';for(let i=0;i<pad;i++)cells+=`<div class="d" style="visibility:hidden"></div>`;
+  days.forEach(d=>{
+    const k=d.toISOString().slice(0,10);
+    const done=!!S.history[k], today=k===todayKey();
+    cells+=`<div class="d ${done?'done':''} ${today?'today':''}">${d.getDate()}</div>`;
+  });
+  const best=bestStreak();
+  V.innerHTML=`
+    <div class="section-title">Your progress</div>
+    <div class="stat-row">
+      <div class="stat"><div class="n">${S.sessions.length}</div><div class="l">Sessions</div></div>
+      <div class="stat"><div class="n">${S.streak}</div><div class="l">Current</div></div>
+      <div class="stat"><div class="n">${best}</div><div class="l">Best streak</div></div>
+    </div>
+    <div class="section-title">Last 4 weeks</div>
+    <div class="card">
+      <div class="dow">${dow.map(d=>`<span>${d}</span>`).join('')}</div>
+      <div class="cal">${cells}</div>
+    </div>
+    <div class="section-title">Milestones</div>
+    <div class="card" style="padding:6px 16px">
+      ${milestone('First session',S.sessions.length>=1)}
+      ${milestone('3-day streak',best>=3)}
+      ${milestone('7-day streak',best>=7)}
+      ${milestone('10 sessions',S.sessions.length>=10)}
+      ${milestone('4-week consistency (20+ sessions)',S.sessions.length>=20)}
+    </div>`;
+}
+function milestone(label,hit){
+  return `<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)">
+    <span style="font-size:1.2rem">${hit?'🏅':'🔒'}</span>
+    <span style="flex:1;color:${hit?'var(--txt)':'var(--mut2)'};font-weight:600;font-size:.92rem">${label}</span>
+    ${hit?'<span style="color:var(--good);font-weight:700;font-size:.8rem">Unlocked</span>':''}</div>`;
+}
+
+/* helpers */
+function weekCount(){const now=new Date();let c=0;for(let i=0;i<7;i++){const d=new Date(now);d.setDate(now.getDate()-i);if(S.history[d.toISOString().slice(0,10)])c++}return c}
+function bestStreak(){
+  const dates=Object.keys(S.history).sort();if(!dates.length)return 0;
+  let best=1,cur=1;
+  for(let i=1;i<dates.length;i++){
+    const prev=new Date(dates[i-1]),cd=new Date(dates[i]);
+    if((cd-prev)/86400000===1){cur++;best=Math.max(best,cur)}else cur=1;
+  }
+  return best;
+}
+function toggleLesson(i){document.getElementById('les'+i).classList.toggle('open')}
+function setLevel(k){S.level=k;save();viewTrain()}
+
+/* ================= NAV ================= */
+function go(v){
+  currentView=v;
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
+  ({today:viewToday,train:viewTrain,learn:viewLearn,progress:viewProgress}[v])();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.v));
+
+/* ================= SESSION PLAYER ================= */
+const Player={
+  steps:[],i:0,timer:null,
+  start(){
+    this.steps=this._flatten(buildSession());
+    this.i=0;
+    document.getElementById('player').classList.remove('hide');
+    document.getElementById('nav').classList.add('hide');
+    this._render();
+  },
+  _flatten(session){
+    // turn each drill/breath into a sequence of timed phases
+    const seq=[];
+    session.forEach(st=>{
+      if(st.kind==='drill'){
+        for(let r=0;r<st.reps;r++){
+          seq.push({label:st.name,phase:st.contractCue,dur:st.hold,mode:'contract',ic:st.ic});
+          seq.push({label:st.name,phase:st.restCue,dur:st.rest,mode:'relax',ic:st.ic});
+        }
+      } else {
+        for(let r=0;r<st.rounds;r++){
+          st.phases.forEach(p=>seq.push({label:st.name,phase:p[0],dur:p[1],mode:p[0].includes('in')||p[0]==='Hold'?'contract':'relax',ic:st.ic}));
+        }
+      }
+    });
+    return seq;
+  },
+  _render(){
+    clearInterval(this.timer);
+    if(this.i>=this.steps.length){return this._complete()}
+    const s=this.steps[this.i];
+    document.getElementById('plCount').textContent=`${this.i+1} / ${this.steps.length}`;
+    document.getElementById('plBar').style.width=(this.i/this.steps.length*100)+'%';
+    const main=document.getElementById('plMain');
+    main.innerHTML=`
+      <div class="pl-phase">${s.label}</div>
+      <div class="pl-name">${s.ic} ${s.phase}</div>
+      <div class="orb-wrap"><div class="orb-ring"></div><div class="orb" id="orb"><span class="cue" id="orbCue"></span></div></div>
+      <div class="pl-timer" id="plTimer">${s.dur}</div>
+      <div class="pl-instr">${s.mode==='contract'?'Squeeze and lift — keep abs and glutes relaxed.':'Fully release. Let the muscle rest.'}</div>`;
+    document.getElementById('plFoot').innerHTML=`
+      <button onclick="Player.skip()">Skip</button>
+      <button class="primary" onclick="Player.quit()">End</button>`;
+    const orb=document.getElementById('orb');
+    // animate orb size to match phase
+    requestAnimationFrame(()=>{
+      if(s.mode==='contract'){orb.style.transform='scale(1.35)';orb.style.boxShadow='0 0 90px rgba(34,211,238,.7)';}
+      else{orb.style.transform='scale(.7)';orb.style.boxShadow='0 0 40px rgba(59,130,246,.4)';}
+    });
+    let t=s.dur;
+    const tEl=document.getElementById('plTimer');
+    this.timer=setInterval(()=>{
+      t--;
+      if(t<=0){clearInterval(this.timer);buzz();this.i++;this._render();return}
+      tEl.textContent=t;
+    },1000);
+  },
+  skip(){clearInterval(this.timer);this.i++;this._render()},
+  _complete(){
+    clearInterval(this.timer);
+    markDone();
+    document.getElementById('plBar').style.width='100%';
+    document.getElementById('plCount').textContent='';
+    document.getElementById('plMain').innerHTML=`
+      <div class="done-screen">
+        <div class="tick">✓</div>
+        <h2 style="font-size:1.6rem">Session complete</h2>
+        <p style="color:var(--mut);margin-top:8px;max-width:280px">Nice work. Consistency is what builds control — see you tomorrow.</p>
+        <div class="streak" style="margin-top:20px">🔥 ${S.streak} day streak</div>
+      </div>`;
+    document.getElementById('plFoot').innerHTML=`<button class="primary" onclick="Player.quit()">Done</button>`;
+  },
+  quit(){
+    clearInterval(this.timer);
+    document.getElementById('player').classList.add('hide');
+    document.getElementById('nav').classList.remove('hide');
+    go(currentView);
+  }
+};
+function buzz(){if(navigator.vibrate)navigator.vibrate(60)}
+function markDone(){
+  const k=todayKey();
+  if(!S.history[k]){
+    S.history[k]=true;
+    S.sessions.push({date:k});
+    // streak
+    if(S.lastDay){
+      const diff=(new Date(k)-new Date(S.lastDay))/86400000;
+      S.streak=diff===1?S.streak+1:1;
+    } else S.streak=1;
+    S.lastDay=k;
+    save();
+  }
+}
+
+/* ================= ONBOARDING ================= */
+const OB=[
+ {q:"Let's build your plan",lead:"A few quick questions to personalise your training. Private and stored only on this device.",key:null,type:'intro'},
+ {q:"What's your main goal?",key:'goal',opts:[
+   {v:'last_longer',ic:'⏱️',h:'Last longer in bed',p:'Extend your staying power'},
+   {v:'control',ic:'🎯',h:'Better ejaculatory control',p:'Master the point of no return'},
+   {v:'confidence',ic:'💎',h:'More confidence',p:'Reduce performance anxiety'},
+   {v:'performance',ic:'🚀',h:'Peak performance',p:'Optimise everything'}]},
+ {q:"How would you rate your control now?",key:'level',opts:[
+   {v:'beginner',ic:'🌱',h:'Just starting',p:'New to this — ease me in'},
+   {v:'intermediate',ic:'📈',h:'Some experience',p:'I know the basics'},
+   {v:'advanced',ic:'🏆',h:'Experienced',p:'Push me harder'}]},
+ {q:"How often can you train?",key:'freq',opts:[
+   {v:3,ic:'🗓️',h:'3 days a week',p:'A steady start'},
+   {v:5,ic:'🔥',h:'5 days a week',p:'Serious progress'},
+   {v:7,ic:'⚡',h:'Every day',p:'Maximum results'}]}
+];
+let obIdx=0;
+function startOnboard(){
+  obIdx=0;document.getElementById('onboard').classList.remove('hide');renderOb();
+}
+function renderOb(){
+  const step=OB[obIdx];
+  document.getElementById('obBar').style.width=((obIdx)/(OB.length-1)*100)+'%';
+  const el=document.getElementById('obStep');
+  if(step.type==='intro'){
+    el.innerHTML=`<div style="text-align:center">
+      <div style="width:76px;height:76px;border-radius:20px;background:var(--grad);display:grid;place-items:center;margin:0 auto 22px;font-size:38px;box-shadow:0 10px 40px rgba(59,130,246,.5)">▲</div>
+      <h2>${step.q}</h2><p class="lead">${step.lead}</p></div>`;
+    document.getElementById('obNext').textContent='Get started';
+  } else {
+    el.innerHTML=`<h2>${step.q}</h2>
+      ${step.opts.map(o=>`<div class="opt ${S[step.key]==o.v?'sel':''}" data-v="${o.v}" onclick="pickOb('${step.key}',this)">
+        <span class="oic">${o.ic}</span><div class="otx"><h4>${o.h}</h4><p>${o.p}</p></div></div>`).join('')}`;
+    document.getElementById('obNext').textContent=obIdx===OB.length-1?'Build my plan':'Continue';
+  }
+}
+function pickOb(key,elm){
+  const v=elm.dataset.v;
+  S[key]=isNaN(v)?v:Number(v);
+  elm.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  elm.classList.add('sel');
+}
+document.getElementById('obNext').onclick=()=>{
+  const step=OB[obIdx];
+  if(step.key && S[step.key]==null){shake();return}
+  if(obIdx<OB.length-1){obIdx++;renderOb();}
+  else{S.onboarded=true;save();document.getElementById('onboard').classList.add('hide');boot();}
+};
+function shake(){const b=document.getElementById('obStep');b.style.animation='none';requestAnimationFrame(()=>b.style.animation='fade .3s')}
+
+/* ================= BOOT ================= */
+function boot(){
+  document.getElementById('app').classList.remove('hide');
+  document.getElementById('nav').classList.remove('hide');
+  // streak reset if a day was missed
+  if(S.lastDay){
+    const diff=(new Date(todayKey())-new Date(S.lastDay))/86400000;
+    if(diff>1)S.streak=0;
+  }
+  save();
+  go('today');
+}
+function resetAll(){
+  if(confirm('Reset all progress and your plan? This cannot be undone.')){
+    localStorage.removeItem(LS);S=load();
+    document.getElementById('app').classList.add('hide');
+    document.getElementById('nav').classList.add('hide');
+    startOnboard();
+  }
+}
+// init
+if(S.onboarded)boot(); else startOnboard();
+</script>
+</body>
+</html>
